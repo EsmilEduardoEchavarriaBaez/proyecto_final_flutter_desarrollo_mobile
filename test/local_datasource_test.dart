@@ -7,7 +7,7 @@ import 'package:proyecto_final_flutter_desarrollo_mobile/features/pokemon/data/l
 void main() {
   test('upsert no duplica filas', () async {
     final db = AppDatabase(NativeDatabase.memory());
-    final ds = PokemonLocalDatasource(db);
+    final ds = PokemonLocalDataSource(db);
 
     final row = PokemonTableCompanion.insert(
       id: const Value(1),
