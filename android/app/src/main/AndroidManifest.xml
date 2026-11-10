@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Necesario para consultar PokeAPI y descargar las imágenes.
+         En modo debug Flutter ya lo añade; sin esta línea la versión
+         release no tendría acceso a la red. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="proyecto_final_flutter_desarrollo_mobile"
+        android:label="Pokédex"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
