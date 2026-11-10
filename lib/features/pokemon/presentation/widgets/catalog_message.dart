@@ -21,6 +21,8 @@ class CatalogMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    // Copia local: Dart solo recuerda que un valor ya no es null en las
+    // variables locales, no en los campos de la clase.
     final onRetry = this.onRetry;
 
     return Center(

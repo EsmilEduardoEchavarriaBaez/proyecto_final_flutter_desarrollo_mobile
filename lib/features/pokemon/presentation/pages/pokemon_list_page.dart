@@ -41,7 +41,7 @@ class PokemonListPage extends ConsumerWidget {
               : const SizedBox(height: 4),
         ),
       ),
-      body: _buildBody(
+      body: _CatalogBody(
         catalog: catalog,
         isSyncing: isSyncing,
         syncError: syncError,
@@ -49,14 +49,36 @@ class PokemonListPage extends ConsumerWidget {
       ),
     );
   }
+}
 
-  Widget _buildBody({
-    required AsyncValue<List<Pokemon>> catalog,
-    required bool isSyncing,
-    required Object? syncError,
-    required Future<void> Function() onRetry,
-  }) {
+/// Cuerpo de la pantalla: decide qué mostrar según lo que haya guardado y
+/// cómo vaya la sincronización.
+class _CatalogBody extends StatelessWidget {
+  const _CatalogBody({
+    required this.catalog,
+    required this.isSyncing,
+    required this.syncError,
+    required this.onRetry,
+  });
+
+  /// Pokémon guardados en la base local.
+  final AsyncValue<List<Pokemon>> catalog;
+
+  /// Hay una sincronización en curso.
+  final bool isSyncing;
+
+  /// Error de la última sincronización; `null` si no falló.
+  final Object? syncError;
+
+  /// Vuelve a sincronizar («Reintentar» o deslizar la lista).
+  final Future<void> Function() onRetry;
+
+  @override
+  Widget build(BuildContext context) {
     final pokemon = catalog.value;
+    // Copia local: Dart solo recuerda que un valor ya no es null en las
+    // variables locales, no en los campos de la clase.
+    final syncError = this.syncError;
 
     // 1. La base local todavía no respondió (solo ocurre al abrir la app).
     //    Si además algo falló, se avisa en lugar de dejar la carga para
