@@ -11,19 +11,21 @@ void main() {
     required List<String> forbidden,
   }) {
     final found = <String>[];
-    final dartFiles = Directory('lib/features')
-        .listSync(recursive: true)
-        .whereType<File>()
-        .where((file) => file.path.contains('/$layer/'))
-        .where((file) => file.path.endsWith('.dart'));
+    final dartFiles = Directory(
+      'lib/features',
+    ).listSync(recursive: true).whereType<File>();
 
     for (final file in dartFiles) {
+      // En Windows las rutas usan `\`; se unifican a `/` para comparar.
+      final path = file.path.replaceAll(r'\', '/');
+      if (!path.contains('/$layer/') || !path.endsWith('.dart')) continue;
+
       final imports = file.readAsLinesSync().where(
         (line) => line.startsWith('import '),
       );
       for (final line in imports) {
         if (forbidden.any(line.contains)) {
-          found.add('${file.path} -> $line');
+          found.add('$path -> $line');
         }
       }
     }
