@@ -24,7 +24,7 @@ class PokemonRemoteDataSource  {
 
       if (result.hasException) throw _mapException(result.exception!);
 
-      final rows = result.data?['pokemon_v2_pokemon'] as List<dynamic>? ?? [];
+      final rows = result.data?['pokemon'] as List<dynamic>? ?? [];
       return rows
           .map((e) => PokemonDto.fromJson(e as Map<String, dynamic>))
           .toList();

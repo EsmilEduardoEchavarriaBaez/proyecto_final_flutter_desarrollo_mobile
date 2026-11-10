@@ -16,11 +16,11 @@ class PokemonDto {
 
   factory PokemonDto.fromJson(Map< String ,dynamic> json)
   {
-    final types =(json['pokemon_v2_pokemontypes'] as List<dynamic>? ?? [])
-        .map((t) => ((t as Map)["pokemon_v2_type"] as Map)['name'] as String )
+    final types =(json['pokemontypes'] as List<dynamic>? ?? [])
+        .map((t) => ((t as Map)["type"] as Map)['name'] as String )
         .toList();
 
-  final spriteRows = json['pokemon_v2_pokemonsprites'] as List<dynamic>? ?? [];
+  final spriteRows = json['pokemonsprites'] as List<dynamic>? ?? [];
   final sprites = spriteRows.isEmpty ? null
       : (spriteRows.first as Map)['sprites'] as Map<String, dynamic>? ;
 

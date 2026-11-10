@@ -1,7 +1,7 @@
 const String pokemonPageQuery =
 r'''
 query PokemonPage($limit: Int!, $offset: Int!) {
-  pokemon_v2_pokemon(
+  pokemon(
     limit: $limit
     offset: $offset
     order_by: {id: asc}
@@ -9,12 +9,12 @@ query PokemonPage($limit: Int!, $offset: Int!) {
   ) {
     id
     name
-    pokemon_v2_pokemontypes {
-      pokemon_v2_type {
+    pokemontypes {
+      type {
         name
       }
     }
-    pokemon_v2_pokemonsprites {
+    pokemonsprites {
       sprites
     }
   }
