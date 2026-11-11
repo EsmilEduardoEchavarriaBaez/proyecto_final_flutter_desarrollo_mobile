@@ -8,32 +8,7 @@ local y sigue funcionando sin conexión.
 Este documento describe el **avance del proyecto**: estructura, persistencia,
 integración con GraphQL y funcionamiento offline.
 
-## Contenido
 
-1. [Qué incluye el avance](#qué-incluye-el-avance)
-2. [Cómo ejecutar](#cómo-ejecutar)
-3. [Arquitectura](#arquitectura)
-4. [Modelo de datos local](#modelo-de-datos-local)
-5. [Estrategia de sincronización](#estrategia-de-sincronización)
-6. [Funcionamiento offline](#funcionamiento-offline)
-7. [Indicador de conectividad](#indicador-de-conectividad)
-8. [Pruebas](#pruebas)
-9. [Decisiones de arquitectura (ADR)](#decisiones-de-arquitectura-adr)
-10. [Pendiente para la entrega final](#pendiente-para-la-entrega-final)
-
-## Qué incluye el avance
-
-| # | Entregable | Dónde está |
-|---|---|---|
-| 1 | Estructura por funcionalidades con capas `presentation`, `domain` y `data` | [`lib/features/`](lib/features) |
-| 2 | Modelo de datos local: catálogo, favoritos y metadatos de sincronización | [`lib/core/database/`](lib/core/database) |
-| 3 | Integración GraphQL con paginación, guardado local y sin duplicados | [`data/remote/`](lib/features/pokemon/data/remote), [`pokemon_repository_impl.dart`](lib/features/pokemon/data/repositories/pokemon_repository_impl.dart) |
-| 4 | La interfaz observa la base local, no las respuestas de GraphQL | [`pokemon_catalog_providers.dart`](lib/features/pokemon/presentation/providers/pokemon_catalog_providers.dart) |
-| 5 | Interfaz sin bloqueos: abre de inmediato y carga en segundo plano | [`main.dart`](lib/main.dart), [`pokemon_list_page.dart`](lib/features/pokemon/presentation/pages/pokemon_list_page.dart) |
-| 6 | Catálogo con nombre, número, imagen y tipos; estados de carga, vacío y error con «Reintentar» | [`presentation/`](lib/features/pokemon/presentation) |
-| 7 | Catálogo disponible sin conexión, también tras reiniciar | Base local + caché de imágenes |
-| 8 | Indicador global Online / Offline con texto e icono | [`lib/features/connectivity/`](lib/features/connectivity), [`app.dart`](lib/app/app.dart) |
-| 9 | Documentación: este README y los ADR | [`docs/adr/`](docs/adr) |
 
 ## Cómo ejecutar
 
@@ -48,14 +23,6 @@ flutter pub get
 flutter run
 ```
 
-Comandos útiles:
-
-| Comando | Para qué |
-|---|---|
-| `flutter analyze` | Revisar el código con el analizador estático |
-| `flutter test` | Ejecutar todas las pruebas |
-| `dart format lib test` | Dar formato al código |
-| `dart run build_runner build` | Regenerar `app_database.g.dart` después de cambiar una tabla |
 
 ## Arquitectura
 
@@ -212,25 +179,9 @@ sequenceDiagram
     end
 ```
 
-Los errores técnicos se traducen a un `Failure` con un mensaje para el usuario
-([`failures.dart`](lib/core/error/failures.dart)):
 
-| Situación | Failure |
-|---|---|
-| El dispositivo no pudo conectarse | `NetworkFailure` |
-| El servidor no respondió en 10 segundos | `TimeoutFailure` |
-| HTTP 429 | `RateLimitFailure` |
-| Otro error HTTP, respuesta ilegible o error de GraphQL | `ServerFailure` |
 
-## Funcionamiento offline
 
-- **Datos:** el catálogo se lee del archivo SQLite del dispositivo, por lo que
-  está disponible sin conexión y después de cerrar y abrir la app.
-- **Imágenes:** `cached_network_image` guarda cada imagen en el disco la
-  primera vez que se muestra. Sin conexión se ven las que ya se habían
-  mostrado; las demás muestran un icono.
-- **Sin errores innecesarios:** si los datos están vigentes, al abrir la app
-  sin conexión ni siquiera se intenta usar la red.
 
 Cómo comprobarlo a mano:
 
@@ -240,57 +191,7 @@ Cómo comprobarlo a mano:
 3. Cerrar la app por completo y abrirla de nuevo, todavía sin conexión: el
    catálogo aparece igual.
 
-## Indicador de conectividad
 
-Franja en la parte inferior, visible en todas las pantallas, con icono y texto:
-
-| Estado | Texto | Icono |
-|---|---|---|
-| Online | «En línea» | `Icons.wifi` |
-| Offline | «Sin conexión» | `Icons.wifi_off` |
-
-Durante el instante inicial, antes de conocer el estado de la red, muestra
-«Comprobando conexión…».
-
-- Es **global** porque se coloca una sola vez en `MaterialApp.builder`
-  ([`app.dart`](lib/app/app.dart)), que envuelve a todas las pantallas.
-- El estado viene de `connectivityStatusProvider`, un `StreamProvider` que
-  escucha los cambios de red con `connectivity_plus`.
-- `connectivity_plus` informa si hay una red activa (wifi, datos), no si esa
-  red tiene salida a internet. Si hay red pero PokeAPI no responde, lo detecta
-  la sincronización y lo muestra como error.
-
-## Pruebas
-
-```bash
-flutter test
-```
-
-| Archivo | Qué comprueba |
-|---|---|
-| [`pokemon_local_datasource_test.dart`](test/features/pokemon/data/pokemon_local_datasource_test.dart) | El *upsert* no duplica, la lista es reactiva y un fallo no borra la fecha de la última sincronización |
-| [`pokemon_dto_test.dart`](test/features/pokemon/data/pokemon_dto_test.dart) | Lectura del JSON de PokeAPI y elección de la imagen |
-| [`pokemon_mapper_test.dart`](test/features/pokemon/data/pokemon_mapper_test.dart) | Conversión DTO → fila → entidad |
-| [`pokemon_remote_datasource_test.dart`](test/features/pokemon/data/pokemon_remote_datasource_test.dart) | Envío de `limit` / `offset` y traducción de cada error a su `Failure` |
-| [`pokemon_repository_impl_test.dart`](test/features/pokemon/data/pokemon_repository_impl_test.dart) | Paginación, vigencia, reanudación tras un fallo y lectura sin red |
-| [`catalog_offline_restart_test.dart`](test/features/pokemon/data/catalog_offline_restart_test.dart) | El catálogo sigue disponible sin conexión después de reiniciar |
-| [`sync_coordinator_test.dart`](test/features/pokemon/data/sync_coordinator_test.dart) | Nunca hay dos sincronizaciones a la vez |
-| [`catalog_sync_controller_test.dart`](test/features/pokemon/presentation/catalog_sync_controller_test.dart) | Sincronización inicial, error y reintento |
-| [`pokemon_list_page_test.dart`](test/features/pokemon/presentation/pokemon_list_page_test.dart) | Estados de carga, vacío, error con «Reintentar» y lista |
-| [`connectivity_repository_impl_test.dart`](test/features/connectivity/connectivity_repository_impl_test.dart) | Traducción del estado de red a Online / Offline |
-| [`connectivity_indicator_test.dart`](test/features/connectivity/connectivity_indicator_test.dart) | Texto e icono del indicador en cada estado |
-| [`app_test.dart`](test/app_test.dart) | La app muestra el catálogo y el indicador global a la vez |
-| [`architecture_test.dart`](test/architecture_test.dart) | Reglas de dependencia entre capas |
-
-Las pruebas no usan la red: la base de datos es SQLite en memoria (o un archivo
-temporal) y PokeAPI se reemplaza por dobles de prueba.
-
-## Decisiones de arquitectura (ADR)
-
-| ADR | Decisión |
-|---|---|
-| [0001](docs/adr/0001-base-local-como-unica-fuente-de-lectura.md) | La base local (Drift) es la única fuente de lectura de la interfaz |
-| [0002](docs/adr/0002-estrategia-de-sincronizacion-del-catalogo.md) | Sincronización del catálogo: descarga completa paginada, reanudable y con vigencia |
 
 ## Pendiente para la entrega final
 
