@@ -7,10 +7,26 @@ import '../../pokemon_dependencies.dart';
 ///
 /// La pantalla observa este provider y se reconstruye sola cada vez que la
 /// base cambia (por ejemplo, al guardarse una página recién descargada).
-final pokemonListProvider = StreamProvider<List<Pokemon>>((ref) {
-  return ref.watch(pokemonRepositoryProvider).watchPokemon();
-});
 
+  class PokemonSearchQuery extends Notifier <String>{
+
+    @override
+    String build() => '';
+
+    void set(String value) => state = value ;
+
+
+    }
+
+  final pokemonSearchQueryProvider =
+  NotifierProvider<PokemonSearchQuery, String>(PokemonSearchQuery.new);
+
+
+  final pokemonListProvider = StreamProvider<List<Pokemon>>((ref)
+  {
+    final query = ref.watch(pokemonSearchQueryProvider);
+    return ref.watch(pokemonRepositoryProvider).watchPokemon(query: query);
+  });
 /// Estado de la sincronización del catálogo con PokeAPI:
 ///
 /// - cargando: hay una descarga en curso;

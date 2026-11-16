@@ -21,7 +21,17 @@ class FakePokemonRepository implements PokemonRepository {
   final List<bool> syncCalls = [];
 
   @override
-  Stream<List<Pokemon>> watchPokemon() => Stream.value(stored);
+  Stream<List<Pokemon>> watchPokemon({String query = ''})
+  {
+    final search = query.trim().toLowerCase();
+    if (search.isEmpty) return Stream.value(stored);
+
+    return Stream.value(
+      stored
+          .where((pokemon) => pokemon.name.toLowerCase().contains(search))
+          .toList(),
+    );
+  }
 
   @override
   Future<void> syncCatalog({bool force = false}) async {

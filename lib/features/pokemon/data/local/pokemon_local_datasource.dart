@@ -13,10 +13,22 @@ class PokemonLocalDataSource {
   ///
   /// Drift vuelve a emitir la lista cada vez que la tabla cambia; por eso la
   /// interfaz se actualiza sola mientras se descargan las páginas.
-  Stream<List<PokemonRow>> watchAll() {
-    final query = _db.select(_db.pokemonTable)
-      ..orderBy([(table) => OrderingTerm.asc(table.id)]);
-    return query.watch();
+  Stream<List<PokemonRow>> watchAll({String query = ''}) {
+  final select = _db.select(_db.pokemonTable);
+
+  if(query.isNotEmpty)
+    {
+
+      select.where((t)=> t.name.lower().like('%${query.toLowerCase()}%'),
+      );
+
+
+    }
+    select.orderBy([(t) => OrderingTerm.asc(t.id)]);
+    return select.watch();
+
+
+
   }
 
   /// Inserta las filas; si el id ya existe, actualiza la fila en lugar de

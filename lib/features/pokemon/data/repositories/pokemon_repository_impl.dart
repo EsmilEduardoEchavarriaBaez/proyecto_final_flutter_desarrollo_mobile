@@ -31,10 +31,10 @@ class PokemonRepositoryImpl implements PokemonRepository {
   static const Duration _maxAge = Duration(hours: 24);
 
   @override
-  Stream<List<Pokemon>> watchPokemon() {
-    return _local.watchAll().map(
-      (rows) => rows.map(PokemonMapper.toEntity).toList(),
-    );
+  Stream<List<Pokemon>> watchPokemon({String query = ''}) {
+    return _local
+        .watchAll(query: query)
+        .map((rows) => rows.map(PokemonMapper.toEntity).toList());
   }
 
   @override
@@ -93,4 +93,6 @@ class PokemonRepositoryImpl implements PokemonRepository {
     }
     return DateTime.now().difference(lastSuccessAt) < _maxAge;
   }
+
+
 }

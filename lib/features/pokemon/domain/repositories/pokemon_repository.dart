@@ -9,7 +9,7 @@ abstract class PokemonRepository {
   ///
   /// Es un `Stream`: emite la lista actual y vuelve a emitir cada vez que la
   /// base cambia. La interfaz solo lee de aquí.
-  Stream<List<Pokemon>> watchPokemon();
+  Stream<List<Pokemon>> watchPokemon({String  query = ''});
 
   /// Descarga el catálogo de PokeAPI y lo guarda en la base local.
   ///

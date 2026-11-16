@@ -6,13 +6,14 @@ import '../../domain/entities/pokemon.dart';
 import '../providers/pokemon_catalog_providers.dart';
 import '../widgets/catalog_message.dart';
 import '../widgets/pokemon_list_item.dart';
+import '../widgets/pokemon_search_bar.dart';
 
 /// Pantalla principal: el catálogo de Pokémon.
 ///
 /// Observa dos cosas distintas:
 ///
-/// - [pokemonListProvider]: los Pokémon guardados en la base local. Es lo
-///   único que se pinta en la lista.
+/// - [pokemonListProvider]: los Pokémon guardados en la base local que
+///   coinciden con la búsqueda. Es lo único que se pinta en la lista.
 /// - [catalogSyncProvider]: cómo va la sincronización con PokeAPI. Solo sirve
 ///   para mostrar el progreso, el error y el botón «Reintentar».
 class PokemonListPage extends ConsumerWidget {
@@ -22,6 +23,7 @@ class PokemonListPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final catalog = ref.watch(pokemonListProvider);
     final sync = ref.watch(catalogSyncProvider);
+    final query = ref.watch(pokemonSearchQueryProvider);
 
     final isSyncing = sync.isLoading;
     // Mientras se vuelve a intentar, el error anterior deja de mostrarse.
@@ -41,28 +43,40 @@ class PokemonListPage extends ConsumerWidget {
               : const SizedBox(height: 4),
         ),
       ),
-      body: _CatalogBody(
-        catalog: catalog,
-        isSyncing: isSyncing,
-        syncError: syncError,
-        onRetry: retry,
+      body: Column(
+        children: [
+          const PokemonSearchBar(),
+          Expanded(
+            child: _CatalogBody(
+              catalog: catalog,
+              query: query,
+              isSyncing: isSyncing,
+              syncError: syncError,
+              onRetry: retry,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Cuerpo de la pantalla: decide qué mostrar según lo que haya guardado y
-/// cómo vaya la sincronización.
+/// Cuerpo de la pantalla: decide qué mostrar según lo que haya guardado,
+/// la búsqueda actual y cómo vaya la sincronización.
 class _CatalogBody extends StatelessWidget {
   const _CatalogBody({
     required this.catalog,
+    required this.query,
     required this.isSyncing,
     required this.syncError,
     required this.onRetry,
   });
 
-  /// Pokémon guardados en la base local.
+  /// Pokémon guardados en la base local que coinciden con la búsqueda.
   final AsyncValue<List<Pokemon>> catalog;
+
+  /// Texto de búsqueda actual; vacío si no hay búsqueda.
+  final String query;
 
   /// Hay una sincronización en curso.
   final bool isSyncing;
@@ -92,6 +106,15 @@ class _CatalogBody extends StatelessWidget {
         );
       }
       return const Center(child: CircularProgressIndicator());
+    }
+
+    // Búsqueda sin coincidencias: se distingue de «catálogo vacío».
+    if (pokemon.isEmpty && query.isNotEmpty) {
+      return CatalogMessage(
+        icon: Icons.search_off,
+        title: 'Sin resultados',
+        message: 'Ningún Pokémon coincide con «$query».',
+      );
     }
 
     // 2. Hay Pokémon guardados: se muestran siempre, aunque la

@@ -10,14 +10,15 @@ class PokedexApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Pokédex',
+      title: 'Pokédex',  debugShowCheckedModeBanner: false,
+
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white30),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.red,
-          brightness: Brightness.dark,
+          seedColor: Colors.white,
+          brightness: Brightness.light,
         ),
       ),
       // `builder` envuelve al navegador de pantallas: lo que se coloca aquí
