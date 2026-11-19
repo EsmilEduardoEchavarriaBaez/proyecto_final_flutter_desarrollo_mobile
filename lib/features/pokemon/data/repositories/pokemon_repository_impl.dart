@@ -2,6 +2,7 @@ import '../../../../core/database/app_database.dart';
 import '../../../../core/database/tables/sync_metadata_table.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/pokemon.dart';
+import '../../domain/entities/pokemon_detail.dart';
 import '../../domain/repositories/pokemon_repository.dart';
 import '../local/pokemon_local_datasource.dart';
 import '../mappers/pokemon_mapper.dart';
@@ -35,6 +36,23 @@ class PokemonRepositoryImpl implements PokemonRepository {
     return _local
         .watchAll(query: query)
         .map((rows) => rows.map(PokemonMapper.toEntity).toList());
+  }
+
+  @override
+  Stream<PokemonDetail?> watchDetail(int id) {
+    return _local.watchById(id).map((row) => row != null ? PokemonMapper.toDetail(row) : null);
+  }
+
+  @override
+  Future<int> verifyCatalogIntegrity() {
+    // Por ahora la integridad es simplemente el conteo local.
+    // En el futuro podría comparar con un total esperado de la API.
+    return _local.countAll();
+  }
+
+  @override
+  Future<int> countLocal() {
+    return _local.countAll();
   }
 
   @override

@@ -39,6 +39,20 @@ class PokemonLocalDataSource {
     });
   }
 
+  /// Cuenta cuántos Pokémon hay guardados en la base local.
+  Future<int> countAll() async {
+    final count = _db.pokemonTable.id.count();
+    final query = _db.selectOnly(_db.pokemonTable)..addColumns([count]);
+    final result = await query.getSingle();
+    return result.read(count) ?? 0;
+  }
+
+  /// Observa un Pokémon por su id.
+  Stream<PokemonRow?> watchById(int id) {
+    return (_db.select(_db.pokemonTable)..where((t) => t.id.equals(id)))
+        .watchSingleOrNull();
+  }
+
   /// Metadatos de sincronización del recurso; `null` si nunca se sincronizó.
   Future<SyncMetadataRow?> getSyncMetadata(String resourceKey) {
     final query = _db.select(_db.syncMetadataTable)

@@ -38,6 +38,54 @@ class $PokemonTableTable extends PokemonTable
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _generationMeta = const VerificationMeta(
+    'generation',
+  );
+  @override
+  late final GeneratedColumn<int> generation = GeneratedColumn<int>(
+    'generation',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _baseTotalMeta = const VerificationMeta(
+    'baseTotal',
+  );
+  @override
+  late final GeneratedColumn<int> baseTotal = GeneratedColumn<int>(
+    'base_total',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _heightDmMeta = const VerificationMeta(
+    'heightDm',
+  );
+  @override
+  late final GeneratedColumn<int> heightDm = GeneratedColumn<int>(
+    'height_dm',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _weightHgMeta = const VerificationMeta(
+    'weightHg',
+  );
+  @override
+  late final GeneratedColumn<int> weightHg = GeneratedColumn<int>(
+    'weight_hg',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _typesMeta = const VerificationMeta('types');
   @override
   late final GeneratedColumn<String> types = GeneratedColumn<String>(
@@ -75,6 +123,10 @@ class $PokemonTableTable extends PokemonTable
     id,
     dexNumber,
     name,
+    generation,
+    baseTotal,
+    heightDm,
+    weightHg,
     types,
     imageUrl,
     updatedAt,
@@ -109,6 +161,30 @@ class $PokemonTableTable extends PokemonTable
       );
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('generation')) {
+      context.handle(
+        _generationMeta,
+        generation.isAcceptableOrUnknown(data['generation']!, _generationMeta),
+      );
+    }
+    if (data.containsKey('base_total')) {
+      context.handle(
+        _baseTotalMeta,
+        baseTotal.isAcceptableOrUnknown(data['base_total']!, _baseTotalMeta),
+      );
+    }
+    if (data.containsKey('height_dm')) {
+      context.handle(
+        _heightDmMeta,
+        heightDm.isAcceptableOrUnknown(data['height_dm']!, _heightDmMeta),
+      );
+    }
+    if (data.containsKey('weight_hg')) {
+      context.handle(
+        _weightHgMeta,
+        weightHg.isAcceptableOrUnknown(data['weight_hg']!, _weightHgMeta),
+      );
     }
     if (data.containsKey('types')) {
       context.handle(
@@ -151,6 +227,22 @@ class $PokemonTableTable extends PokemonTable
         DriftSqlType.string,
         data['${effectivePrefix}name'],
       )!,
+      generation: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}generation'],
+      )!,
+      baseTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}base_total'],
+      )!,
+      heightDm: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height_dm'],
+      )!,
+      weightHg: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}weight_hg'],
+      )!,
       types: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}types'],
@@ -173,26 +265,24 @@ class $PokemonTableTable extends PokemonTable
 }
 
 class PokemonRow extends DataClass implements Insertable<PokemonRow> {
-  /// Id del Pokémon en PokeAPI. Al ser la llave primaria, volver a guardar el
-  /// mismo Pokémon actualiza su fila en lugar de duplicarla.
   final int id;
-
-  /// Número en la Pokédex nacional.
   final int dexNumber;
   final String name;
-
-  /// Tipos separados por coma, en orden. Ejemplo: `grass,poison`.
+  final int generation;
+  final int baseTotal;
+  final int heightDm;
+  final int weightHg;
   final String types;
-
-  /// URL de la imagen; `null` si PokeAPI no tiene ninguna.
   final String? imageUrl;
-
-  /// Momento en que se guardó o actualizó la fila.
   final DateTime updatedAt;
   const PokemonRow({
     required this.id,
     required this.dexNumber,
     required this.name,
+    required this.generation,
+    required this.baseTotal,
+    required this.heightDm,
+    required this.weightHg,
     required this.types,
     this.imageUrl,
     required this.updatedAt,
@@ -203,6 +293,10 @@ class PokemonRow extends DataClass implements Insertable<PokemonRow> {
     map['id'] = Variable<int>(id);
     map['dex_number'] = Variable<int>(dexNumber);
     map['name'] = Variable<String>(name);
+    map['generation'] = Variable<int>(generation);
+    map['base_total'] = Variable<int>(baseTotal);
+    map['height_dm'] = Variable<int>(heightDm);
+    map['weight_hg'] = Variable<int>(weightHg);
     map['types'] = Variable<String>(types);
     if (!nullToAbsent || imageUrl != null) {
       map['image_url'] = Variable<String>(imageUrl);
@@ -216,6 +310,10 @@ class PokemonRow extends DataClass implements Insertable<PokemonRow> {
       id: Value(id),
       dexNumber: Value(dexNumber),
       name: Value(name),
+      generation: Value(generation),
+      baseTotal: Value(baseTotal),
+      heightDm: Value(heightDm),
+      weightHg: Value(weightHg),
       types: Value(types),
       imageUrl: imageUrl == null && nullToAbsent
           ? const Value.absent()
@@ -233,6 +331,10 @@ class PokemonRow extends DataClass implements Insertable<PokemonRow> {
       id: serializer.fromJson<int>(json['id']),
       dexNumber: serializer.fromJson<int>(json['dexNumber']),
       name: serializer.fromJson<String>(json['name']),
+      generation: serializer.fromJson<int>(json['generation']),
+      baseTotal: serializer.fromJson<int>(json['baseTotal']),
+      heightDm: serializer.fromJson<int>(json['heightDm']),
+      weightHg: serializer.fromJson<int>(json['weightHg']),
       types: serializer.fromJson<String>(json['types']),
       imageUrl: serializer.fromJson<String?>(json['imageUrl']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
@@ -245,6 +347,10 @@ class PokemonRow extends DataClass implements Insertable<PokemonRow> {
       'id': serializer.toJson<int>(id),
       'dexNumber': serializer.toJson<int>(dexNumber),
       'name': serializer.toJson<String>(name),
+      'generation': serializer.toJson<int>(generation),
+      'baseTotal': serializer.toJson<int>(baseTotal),
+      'heightDm': serializer.toJson<int>(heightDm),
+      'weightHg': serializer.toJson<int>(weightHg),
       'types': serializer.toJson<String>(types),
       'imageUrl': serializer.toJson<String?>(imageUrl),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
@@ -255,6 +361,10 @@ class PokemonRow extends DataClass implements Insertable<PokemonRow> {
     int? id,
     int? dexNumber,
     String? name,
+    int? generation,
+    int? baseTotal,
+    int? heightDm,
+    int? weightHg,
     String? types,
     Value<String?> imageUrl = const Value.absent(),
     DateTime? updatedAt,
@@ -262,6 +372,10 @@ class PokemonRow extends DataClass implements Insertable<PokemonRow> {
     id: id ?? this.id,
     dexNumber: dexNumber ?? this.dexNumber,
     name: name ?? this.name,
+    generation: generation ?? this.generation,
+    baseTotal: baseTotal ?? this.baseTotal,
+    heightDm: heightDm ?? this.heightDm,
+    weightHg: weightHg ?? this.weightHg,
     types: types ?? this.types,
     imageUrl: imageUrl.present ? imageUrl.value : this.imageUrl,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -271,6 +385,12 @@ class PokemonRow extends DataClass implements Insertable<PokemonRow> {
       id: data.id.present ? data.id.value : this.id,
       dexNumber: data.dexNumber.present ? data.dexNumber.value : this.dexNumber,
       name: data.name.present ? data.name.value : this.name,
+      generation: data.generation.present
+          ? data.generation.value
+          : this.generation,
+      baseTotal: data.baseTotal.present ? data.baseTotal.value : this.baseTotal,
+      heightDm: data.heightDm.present ? data.heightDm.value : this.heightDm,
+      weightHg: data.weightHg.present ? data.weightHg.value : this.weightHg,
       types: data.types.present ? data.types.value : this.types,
       imageUrl: data.imageUrl.present ? data.imageUrl.value : this.imageUrl,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
@@ -283,6 +403,10 @@ class PokemonRow extends DataClass implements Insertable<PokemonRow> {
           ..write('id: $id, ')
           ..write('dexNumber: $dexNumber, ')
           ..write('name: $name, ')
+          ..write('generation: $generation, ')
+          ..write('baseTotal: $baseTotal, ')
+          ..write('heightDm: $heightDm, ')
+          ..write('weightHg: $weightHg, ')
           ..write('types: $types, ')
           ..write('imageUrl: $imageUrl, ')
           ..write('updatedAt: $updatedAt')
@@ -291,8 +415,18 @@ class PokemonRow extends DataClass implements Insertable<PokemonRow> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, dexNumber, name, types, imageUrl, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    dexNumber,
+    name,
+    generation,
+    baseTotal,
+    heightDm,
+    weightHg,
+    types,
+    imageUrl,
+    updatedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -300,6 +434,10 @@ class PokemonRow extends DataClass implements Insertable<PokemonRow> {
           other.id == this.id &&
           other.dexNumber == this.dexNumber &&
           other.name == this.name &&
+          other.generation == this.generation &&
+          other.baseTotal == this.baseTotal &&
+          other.heightDm == this.heightDm &&
+          other.weightHg == this.weightHg &&
           other.types == this.types &&
           other.imageUrl == this.imageUrl &&
           other.updatedAt == this.updatedAt);
@@ -309,6 +447,10 @@ class PokemonTableCompanion extends UpdateCompanion<PokemonRow> {
   final Value<int> id;
   final Value<int> dexNumber;
   final Value<String> name;
+  final Value<int> generation;
+  final Value<int> baseTotal;
+  final Value<int> heightDm;
+  final Value<int> weightHg;
   final Value<String> types;
   final Value<String?> imageUrl;
   final Value<DateTime> updatedAt;
@@ -316,6 +458,10 @@ class PokemonTableCompanion extends UpdateCompanion<PokemonRow> {
     this.id = const Value.absent(),
     this.dexNumber = const Value.absent(),
     this.name = const Value.absent(),
+    this.generation = const Value.absent(),
+    this.baseTotal = const Value.absent(),
+    this.heightDm = const Value.absent(),
+    this.weightHg = const Value.absent(),
     this.types = const Value.absent(),
     this.imageUrl = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -324,6 +470,10 @@ class PokemonTableCompanion extends UpdateCompanion<PokemonRow> {
     this.id = const Value.absent(),
     required int dexNumber,
     required String name,
+    this.generation = const Value.absent(),
+    this.baseTotal = const Value.absent(),
+    this.heightDm = const Value.absent(),
+    this.weightHg = const Value.absent(),
     required String types,
     this.imageUrl = const Value.absent(),
     this.updatedAt = const Value.absent(),
@@ -334,6 +484,10 @@ class PokemonTableCompanion extends UpdateCompanion<PokemonRow> {
     Expression<int>? id,
     Expression<int>? dexNumber,
     Expression<String>? name,
+    Expression<int>? generation,
+    Expression<int>? baseTotal,
+    Expression<int>? heightDm,
+    Expression<int>? weightHg,
     Expression<String>? types,
     Expression<String>? imageUrl,
     Expression<DateTime>? updatedAt,
@@ -342,6 +496,10 @@ class PokemonTableCompanion extends UpdateCompanion<PokemonRow> {
       if (id != null) 'id': id,
       if (dexNumber != null) 'dex_number': dexNumber,
       if (name != null) 'name': name,
+      if (generation != null) 'generation': generation,
+      if (baseTotal != null) 'base_total': baseTotal,
+      if (heightDm != null) 'height_dm': heightDm,
+      if (weightHg != null) 'weight_hg': weightHg,
       if (types != null) 'types': types,
       if (imageUrl != null) 'image_url': imageUrl,
       if (updatedAt != null) 'updated_at': updatedAt,
@@ -352,6 +510,10 @@ class PokemonTableCompanion extends UpdateCompanion<PokemonRow> {
     Value<int>? id,
     Value<int>? dexNumber,
     Value<String>? name,
+    Value<int>? generation,
+    Value<int>? baseTotal,
+    Value<int>? heightDm,
+    Value<int>? weightHg,
     Value<String>? types,
     Value<String?>? imageUrl,
     Value<DateTime>? updatedAt,
@@ -360,6 +522,10 @@ class PokemonTableCompanion extends UpdateCompanion<PokemonRow> {
       id: id ?? this.id,
       dexNumber: dexNumber ?? this.dexNumber,
       name: name ?? this.name,
+      generation: generation ?? this.generation,
+      baseTotal: baseTotal ?? this.baseTotal,
+      heightDm: heightDm ?? this.heightDm,
+      weightHg: weightHg ?? this.weightHg,
       types: types ?? this.types,
       imageUrl: imageUrl ?? this.imageUrl,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -377,6 +543,18 @@ class PokemonTableCompanion extends UpdateCompanion<PokemonRow> {
     }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
+    }
+    if (generation.present) {
+      map['generation'] = Variable<int>(generation.value);
+    }
+    if (baseTotal.present) {
+      map['base_total'] = Variable<int>(baseTotal.value);
+    }
+    if (heightDm.present) {
+      map['height_dm'] = Variable<int>(heightDm.value);
+    }
+    if (weightHg.present) {
+      map['weight_hg'] = Variable<int>(weightHg.value);
     }
     if (types.present) {
       map['types'] = Variable<String>(types.value);
@@ -396,6 +574,10 @@ class PokemonTableCompanion extends UpdateCompanion<PokemonRow> {
           ..write('id: $id, ')
           ..write('dexNumber: $dexNumber, ')
           ..write('name: $name, ')
+          ..write('generation: $generation, ')
+          ..write('baseTotal: $baseTotal, ')
+          ..write('heightDm: $heightDm, ')
+          ..write('weightHg: $weightHg, ')
           ..write('types: $types, ')
           ..write('imageUrl: $imageUrl, ')
           ..write('updatedAt: $updatedAt')
@@ -964,6 +1146,18 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FavoriteTableTable favoriteTable = $FavoriteTableTable(this);
   late final $SyncMetadataTableTable syncMetadataTable =
       $SyncMetadataTableTable(this);
+  late final Index idxPokemonGeneration = Index(
+    'idx_pokemon_generation',
+    'CREATE INDEX idx_pokemon_generation ON pokemon_table (generation)',
+  );
+  late final Index idxPokemonName = Index(
+    'idx_pokemon_name',
+    'CREATE INDEX idx_pokemon_name ON pokemon_table (name)',
+  );
+  late final Index idxPokemonBaseTotal = Index(
+    'idx_pokemon_base_total',
+    'CREATE INDEX idx_pokemon_base_total ON pokemon_table (base_total)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -972,6 +1166,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     pokemonTable,
     favoriteTable,
     syncMetadataTable,
+    idxPokemonGeneration,
+    idxPokemonName,
+    idxPokemonBaseTotal,
   ];
 }
 
@@ -980,6 +1177,10 @@ typedef $$PokemonTableTableCreateCompanionBuilder =
       Value<int> id,
       required int dexNumber,
       required String name,
+      Value<int> generation,
+      Value<int> baseTotal,
+      Value<int> heightDm,
+      Value<int> weightHg,
       required String types,
       Value<String?> imageUrl,
       Value<DateTime> updatedAt,
@@ -989,6 +1190,10 @@ typedef $$PokemonTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<int> dexNumber,
       Value<String> name,
+      Value<int> generation,
+      Value<int> baseTotal,
+      Value<int> heightDm,
+      Value<int> weightHg,
       Value<String> types,
       Value<String?> imageUrl,
       Value<DateTime> updatedAt,
@@ -1015,6 +1220,26 @@ class $$PokemonTableTableFilterComposer
 
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get generation => $composableBuilder(
+    column: $table.generation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get baseTotal => $composableBuilder(
+    column: $table.baseTotal,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get heightDm => $composableBuilder(
+    column: $table.heightDm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get weightHg => $composableBuilder(
+    column: $table.weightHg,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1058,6 +1283,26 @@ class $$PokemonTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get generation => $composableBuilder(
+    column: $table.generation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get baseTotal => $composableBuilder(
+    column: $table.baseTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get heightDm => $composableBuilder(
+    column: $table.heightDm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get weightHg => $composableBuilder(
+    column: $table.weightHg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get types => $composableBuilder(
     column: $table.types,
     builder: (column) => ColumnOrderings(column),
@@ -1091,6 +1336,20 @@ class $$PokemonTableTableAnnotationComposer
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get generation => $composableBuilder(
+    column: $table.generation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get baseTotal =>
+      $composableBuilder(column: $table.baseTotal, builder: (column) => column);
+
+  GeneratedColumn<int> get heightDm =>
+      $composableBuilder(column: $table.heightDm, builder: (column) => column);
+
+  GeneratedColumn<int> get weightHg =>
+      $composableBuilder(column: $table.weightHg, builder: (column) => column);
 
   GeneratedColumn<String> get types =>
       $composableBuilder(column: $table.types, builder: (column) => column);
@@ -1136,6 +1395,10 @@ class $$PokemonTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<int> dexNumber = const Value.absent(),
                 Value<String> name = const Value.absent(),
+                Value<int> generation = const Value.absent(),
+                Value<int> baseTotal = const Value.absent(),
+                Value<int> heightDm = const Value.absent(),
+                Value<int> weightHg = const Value.absent(),
                 Value<String> types = const Value.absent(),
                 Value<String?> imageUrl = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -1143,6 +1406,10 @@ class $$PokemonTableTableTableManager
                 id: id,
                 dexNumber: dexNumber,
                 name: name,
+                generation: generation,
+                baseTotal: baseTotal,
+                heightDm: heightDm,
+                weightHg: weightHg,
                 types: types,
                 imageUrl: imageUrl,
                 updatedAt: updatedAt,
@@ -1152,6 +1419,10 @@ class $$PokemonTableTableTableManager
                 Value<int> id = const Value.absent(),
                 required int dexNumber,
                 required String name,
+                Value<int> generation = const Value.absent(),
+                Value<int> baseTotal = const Value.absent(),
+                Value<int> heightDm = const Value.absent(),
+                Value<int> weightHg = const Value.absent(),
                 required String types,
                 Value<String?> imageUrl = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
@@ -1159,6 +1430,10 @@ class $$PokemonTableTableTableManager
                 id: id,
                 dexNumber: dexNumber,
                 name: name,
+                generation: generation,
+                baseTotal: baseTotal,
+                heightDm: heightDm,
+                weightHg: weightHg,
                 types: types,
                 imageUrl: imageUrl,
                 updatedAt: updatedAt,
