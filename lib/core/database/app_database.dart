@@ -3,6 +3,19 @@ import 'package:drift_flutter/drift_flutter.dart';
 
 import 'tables/favorite_table.dart';
 import 'tables/pokemon_table.dart';
+import 'tables/pokemon_type_table.dart';
+import 'tables/type_table.dart';
+import 'tables/stat_table.dart';
+import 'tables/ability_table.dart';
+import 'tables/pokemon_ability_table.dart';
+import 'tables/move_table.dart';
+import 'tables/pokemon_move_table.dart';
+import 'tables/evolution_table.dart';
+import 'tables/form_table.dart';
+import 'tables/form_type_table.dart';
+import 'tables/egg_group_table.dart';
+import 'tables/pokemon_egg_group_table.dart';
+import 'tables/type_matchup_table.dart';
 import 'tables/sync_metadata_table.dart';
 
 part 'app_database.g.dart';
@@ -14,7 +27,24 @@ part 'app_database.g.dart';
 ///
 /// El archivo `app_database.g.dart` lo genera Drift a partir de las tablas:
 /// `dart run build_runner build`.
-@DriftDatabase(tables: [PokemonTable, FavoriteTable, SyncMetadataTable])
+@DriftDatabase(tables: [
+  PokemonTable,
+  FavoriteTable,
+  PokemonTypeTable,
+  TypeTable,
+  StatTable,
+  AbilityTable,
+  PokemonAbilityTable,
+  MoveTable,
+  PokemonMoveTable,
+  EvolutionTable,
+  FormTable,
+  FormTypeTable,
+  EggGroupTable,
+  PokemonEggGroupTable,
+  TypeMatchupTable,
+  SyncMetadataTable,
+])
 class AppDatabase extends _$AppDatabase {
   /// Recibe la conexión por parámetro para poder usar una base en memoria en
   /// las pruebas.
