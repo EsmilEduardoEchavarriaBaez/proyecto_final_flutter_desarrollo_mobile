@@ -586,212 +586,6 @@ class PokemonTableCompanion extends UpdateCompanion<PokemonRow> {
   }
 }
 
-class $FavoriteTableTable extends FavoriteTable
-    with TableInfo<$FavoriteTableTable, FavoriteRow> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $FavoriteTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _pokemonIdMeta = const VerificationMeta(
-    'pokemonId',
-  );
-  @override
-  late final GeneratedColumn<int> pokemonId = GeneratedColumn<int>(
-    'pokemon_id',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-    defaultValue: currentDateAndTime,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [pokemonId, createdAt];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'favorite_table';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<FavoriteRow> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('pokemon_id')) {
-      context.handle(
-        _pokemonIdMeta,
-        pokemonId.isAcceptableOrUnknown(data['pokemon_id']!, _pokemonIdMeta),
-      );
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {pokemonId};
-  @override
-  FavoriteRow map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return FavoriteRow(
-      pokemonId: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}pokemon_id'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-    );
-  }
-
-  @override
-  $FavoriteTableTable createAlias(String alias) {
-    return $FavoriteTableTable(attachedDatabase, alias);
-  }
-}
-
-class FavoriteRow extends DataClass implements Insertable<FavoriteRow> {
-  /// Id del Pokémon favorito. Es la llave primaria: un Pokémon solo puede
-  /// estar una vez en favoritos.
-  final int pokemonId;
-
-  /// Momento en que se marcó como favorito.
-  final DateTime createdAt;
-  const FavoriteRow({required this.pokemonId, required this.createdAt});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['pokemon_id'] = Variable<int>(pokemonId);
-    map['created_at'] = Variable<DateTime>(createdAt);
-    return map;
-  }
-
-  FavoriteTableCompanion toCompanion(bool nullToAbsent) {
-    return FavoriteTableCompanion(
-      pokemonId: Value(pokemonId),
-      createdAt: Value(createdAt),
-    );
-  }
-
-  factory FavoriteRow.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return FavoriteRow(
-      pokemonId: serializer.fromJson<int>(json['pokemonId']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'pokemonId': serializer.toJson<int>(pokemonId),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-    };
-  }
-
-  FavoriteRow copyWith({int? pokemonId, DateTime? createdAt}) => FavoriteRow(
-    pokemonId: pokemonId ?? this.pokemonId,
-    createdAt: createdAt ?? this.createdAt,
-  );
-  FavoriteRow copyWithCompanion(FavoriteTableCompanion data) {
-    return FavoriteRow(
-      pokemonId: data.pokemonId.present ? data.pokemonId.value : this.pokemonId,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('FavoriteRow(')
-          ..write('pokemonId: $pokemonId, ')
-          ..write('createdAt: $createdAt')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(pokemonId, createdAt);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is FavoriteRow &&
-          other.pokemonId == this.pokemonId &&
-          other.createdAt == this.createdAt);
-}
-
-class FavoriteTableCompanion extends UpdateCompanion<FavoriteRow> {
-  final Value<int> pokemonId;
-  final Value<DateTime> createdAt;
-  const FavoriteTableCompanion({
-    this.pokemonId = const Value.absent(),
-    this.createdAt = const Value.absent(),
-  });
-  FavoriteTableCompanion.insert({
-    this.pokemonId = const Value.absent(),
-    this.createdAt = const Value.absent(),
-  });
-  static Insertable<FavoriteRow> custom({
-    Expression<int>? pokemonId,
-    Expression<DateTime>? createdAt,
-  }) {
-    return RawValuesInsertable({
-      if (pokemonId != null) 'pokemon_id': pokemonId,
-      if (createdAt != null) 'created_at': createdAt,
-    });
-  }
-
-  FavoriteTableCompanion copyWith({
-    Value<int>? pokemonId,
-    Value<DateTime>? createdAt,
-  }) {
-    return FavoriteTableCompanion(
-      pokemonId: pokemonId ?? this.pokemonId,
-      createdAt: createdAt ?? this.createdAt,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (pokemonId.present) {
-      map['pokemon_id'] = Variable<int>(pokemonId.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('FavoriteTableCompanion(')
-          ..write('pokemonId: $pokemonId, ')
-          ..write('createdAt: $createdAt')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $TypeTableTable extends TypeTable
     with TableInfo<$TypeTableTable, TypeRow> {
   @override
@@ -4324,6 +4118,1108 @@ class TypeMatchupTableCompanion extends UpdateCompanion<TypeMatchupRow> {
   }
 }
 
+class $TriviaResultTableTable extends TriviaResultTable
+    with TableInfo<$TriviaResultTableTable, TriviaResultRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TriviaResultTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _scoreMeta = const VerificationMeta('score');
+  @override
+  late final GeneratedColumn<int> score = GeneratedColumn<int>(
+    'score',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _correctAnswersMeta = const VerificationMeta(
+    'correctAnswers',
+  );
+  @override
+  late final GeneratedColumn<int> correctAnswers = GeneratedColumn<int>(
+    'correct_answers',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _totalQuestionsMeta = const VerificationMeta(
+    'totalQuestions',
+  );
+  @override
+  late final GeneratedColumn<int> totalQuestions = GeneratedColumn<int>(
+    'total_questions',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _playedAtMeta = const VerificationMeta(
+    'playedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> playedAt = GeneratedColumn<DateTime>(
+    'played_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    score,
+    correctAnswers,
+    totalQuestions,
+    playedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'trivia_result_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TriviaResultRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('score')) {
+      context.handle(
+        _scoreMeta,
+        score.isAcceptableOrUnknown(data['score']!, _scoreMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_scoreMeta);
+    }
+    if (data.containsKey('correct_answers')) {
+      context.handle(
+        _correctAnswersMeta,
+        correctAnswers.isAcceptableOrUnknown(
+          data['correct_answers']!,
+          _correctAnswersMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_correctAnswersMeta);
+    }
+    if (data.containsKey('total_questions')) {
+      context.handle(
+        _totalQuestionsMeta,
+        totalQuestions.isAcceptableOrUnknown(
+          data['total_questions']!,
+          _totalQuestionsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_totalQuestionsMeta);
+    }
+    if (data.containsKey('played_at')) {
+      context.handle(
+        _playedAtMeta,
+        playedAt.isAcceptableOrUnknown(data['played_at']!, _playedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TriviaResultRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TriviaResultRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      score: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}score'],
+      )!,
+      correctAnswers: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}correct_answers'],
+      )!,
+      totalQuestions: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_questions'],
+      )!,
+      playedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}played_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TriviaResultTableTable createAlias(String alias) {
+    return $TriviaResultTableTable(attachedDatabase, alias);
+  }
+}
+
+class TriviaResultRow extends DataClass implements Insertable<TriviaResultRow> {
+  final int id;
+  final int score;
+  final int correctAnswers;
+  final int totalQuestions;
+  final DateTime playedAt;
+  const TriviaResultRow({
+    required this.id,
+    required this.score,
+    required this.correctAnswers,
+    required this.totalQuestions,
+    required this.playedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['score'] = Variable<int>(score);
+    map['correct_answers'] = Variable<int>(correctAnswers);
+    map['total_questions'] = Variable<int>(totalQuestions);
+    map['played_at'] = Variable<DateTime>(playedAt);
+    return map;
+  }
+
+  TriviaResultTableCompanion toCompanion(bool nullToAbsent) {
+    return TriviaResultTableCompanion(
+      id: Value(id),
+      score: Value(score),
+      correctAnswers: Value(correctAnswers),
+      totalQuestions: Value(totalQuestions),
+      playedAt: Value(playedAt),
+    );
+  }
+
+  factory TriviaResultRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TriviaResultRow(
+      id: serializer.fromJson<int>(json['id']),
+      score: serializer.fromJson<int>(json['score']),
+      correctAnswers: serializer.fromJson<int>(json['correctAnswers']),
+      totalQuestions: serializer.fromJson<int>(json['totalQuestions']),
+      playedAt: serializer.fromJson<DateTime>(json['playedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'score': serializer.toJson<int>(score),
+      'correctAnswers': serializer.toJson<int>(correctAnswers),
+      'totalQuestions': serializer.toJson<int>(totalQuestions),
+      'playedAt': serializer.toJson<DateTime>(playedAt),
+    };
+  }
+
+  TriviaResultRow copyWith({
+    int? id,
+    int? score,
+    int? correctAnswers,
+    int? totalQuestions,
+    DateTime? playedAt,
+  }) => TriviaResultRow(
+    id: id ?? this.id,
+    score: score ?? this.score,
+    correctAnswers: correctAnswers ?? this.correctAnswers,
+    totalQuestions: totalQuestions ?? this.totalQuestions,
+    playedAt: playedAt ?? this.playedAt,
+  );
+  TriviaResultRow copyWithCompanion(TriviaResultTableCompanion data) {
+    return TriviaResultRow(
+      id: data.id.present ? data.id.value : this.id,
+      score: data.score.present ? data.score.value : this.score,
+      correctAnswers: data.correctAnswers.present
+          ? data.correctAnswers.value
+          : this.correctAnswers,
+      totalQuestions: data.totalQuestions.present
+          ? data.totalQuestions.value
+          : this.totalQuestions,
+      playedAt: data.playedAt.present ? data.playedAt.value : this.playedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TriviaResultRow(')
+          ..write('id: $id, ')
+          ..write('score: $score, ')
+          ..write('correctAnswers: $correctAnswers, ')
+          ..write('totalQuestions: $totalQuestions, ')
+          ..write('playedAt: $playedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, score, correctAnswers, totalQuestions, playedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TriviaResultRow &&
+          other.id == this.id &&
+          other.score == this.score &&
+          other.correctAnswers == this.correctAnswers &&
+          other.totalQuestions == this.totalQuestions &&
+          other.playedAt == this.playedAt);
+}
+
+class TriviaResultTableCompanion extends UpdateCompanion<TriviaResultRow> {
+  final Value<int> id;
+  final Value<int> score;
+  final Value<int> correctAnswers;
+  final Value<int> totalQuestions;
+  final Value<DateTime> playedAt;
+  const TriviaResultTableCompanion({
+    this.id = const Value.absent(),
+    this.score = const Value.absent(),
+    this.correctAnswers = const Value.absent(),
+    this.totalQuestions = const Value.absent(),
+    this.playedAt = const Value.absent(),
+  });
+  TriviaResultTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int score,
+    required int correctAnswers,
+    required int totalQuestions,
+    this.playedAt = const Value.absent(),
+  }) : score = Value(score),
+       correctAnswers = Value(correctAnswers),
+       totalQuestions = Value(totalQuestions);
+  static Insertable<TriviaResultRow> custom({
+    Expression<int>? id,
+    Expression<int>? score,
+    Expression<int>? correctAnswers,
+    Expression<int>? totalQuestions,
+    Expression<DateTime>? playedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (score != null) 'score': score,
+      if (correctAnswers != null) 'correct_answers': correctAnswers,
+      if (totalQuestions != null) 'total_questions': totalQuestions,
+      if (playedAt != null) 'played_at': playedAt,
+    });
+  }
+
+  TriviaResultTableCompanion copyWith({
+    Value<int>? id,
+    Value<int>? score,
+    Value<int>? correctAnswers,
+    Value<int>? totalQuestions,
+    Value<DateTime>? playedAt,
+  }) {
+    return TriviaResultTableCompanion(
+      id: id ?? this.id,
+      score: score ?? this.score,
+      correctAnswers: correctAnswers ?? this.correctAnswers,
+      totalQuestions: totalQuestions ?? this.totalQuestions,
+      playedAt: playedAt ?? this.playedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (score.present) {
+      map['score'] = Variable<int>(score.value);
+    }
+    if (correctAnswers.present) {
+      map['correct_answers'] = Variable<int>(correctAnswers.value);
+    }
+    if (totalQuestions.present) {
+      map['total_questions'] = Variable<int>(totalQuestions.value);
+    }
+    if (playedAt.present) {
+      map['played_at'] = Variable<DateTime>(playedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TriviaResultTableCompanion(')
+          ..write('id: $id, ')
+          ..write('score: $score, ')
+          ..write('correctAnswers: $correctAnswers, ')
+          ..write('totalQuestions: $totalQuestions, ')
+          ..write('playedAt: $playedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TriviaAnswerTableTable extends TriviaAnswerTable
+    with TableInfo<$TriviaAnswerTableTable, TriviaAnswerRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TriviaAnswerTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _triviaResultIdMeta = const VerificationMeta(
+    'triviaResultId',
+  );
+  @override
+  late final GeneratedColumn<int> triviaResultId = GeneratedColumn<int>(
+    'trivia_result_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES trivia_result_table (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _pokemonIdMeta = const VerificationMeta(
+    'pokemonId',
+  );
+  @override
+  late final GeneratedColumn<int> pokemonId = GeneratedColumn<int>(
+    'pokemon_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES pokemon_table (id)',
+    ),
+  );
+  static const VerificationMeta _correctMeta = const VerificationMeta(
+    'correct',
+  );
+  @override
+  late final GeneratedColumn<bool> correct = GeneratedColumn<bool>(
+    'correct',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("correct" IN (0, 1))',
+    ),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    triviaResultId,
+    pokemonId,
+    correct,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'trivia_answer_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TriviaAnswerRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('trivia_result_id')) {
+      context.handle(
+        _triviaResultIdMeta,
+        triviaResultId.isAcceptableOrUnknown(
+          data['trivia_result_id']!,
+          _triviaResultIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_triviaResultIdMeta);
+    }
+    if (data.containsKey('pokemon_id')) {
+      context.handle(
+        _pokemonIdMeta,
+        pokemonId.isAcceptableOrUnknown(data['pokemon_id']!, _pokemonIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pokemonIdMeta);
+    }
+    if (data.containsKey('correct')) {
+      context.handle(
+        _correctMeta,
+        correct.isAcceptableOrUnknown(data['correct']!, _correctMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_correctMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TriviaAnswerRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TriviaAnswerRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      triviaResultId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}trivia_result_id'],
+      )!,
+      pokemonId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pokemon_id'],
+      )!,
+      correct: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}correct'],
+      )!,
+    );
+  }
+
+  @override
+  $TriviaAnswerTableTable createAlias(String alias) {
+    return $TriviaAnswerTableTable(attachedDatabase, alias);
+  }
+}
+
+class TriviaAnswerRow extends DataClass implements Insertable<TriviaAnswerRow> {
+  final int id;
+  final int triviaResultId;
+  final int pokemonId;
+  final bool correct;
+  const TriviaAnswerRow({
+    required this.id,
+    required this.triviaResultId,
+    required this.pokemonId,
+    required this.correct,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['trivia_result_id'] = Variable<int>(triviaResultId);
+    map['pokemon_id'] = Variable<int>(pokemonId);
+    map['correct'] = Variable<bool>(correct);
+    return map;
+  }
+
+  TriviaAnswerTableCompanion toCompanion(bool nullToAbsent) {
+    return TriviaAnswerTableCompanion(
+      id: Value(id),
+      triviaResultId: Value(triviaResultId),
+      pokemonId: Value(pokemonId),
+      correct: Value(correct),
+    );
+  }
+
+  factory TriviaAnswerRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TriviaAnswerRow(
+      id: serializer.fromJson<int>(json['id']),
+      triviaResultId: serializer.fromJson<int>(json['triviaResultId']),
+      pokemonId: serializer.fromJson<int>(json['pokemonId']),
+      correct: serializer.fromJson<bool>(json['correct']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'triviaResultId': serializer.toJson<int>(triviaResultId),
+      'pokemonId': serializer.toJson<int>(pokemonId),
+      'correct': serializer.toJson<bool>(correct),
+    };
+  }
+
+  TriviaAnswerRow copyWith({
+    int? id,
+    int? triviaResultId,
+    int? pokemonId,
+    bool? correct,
+  }) => TriviaAnswerRow(
+    id: id ?? this.id,
+    triviaResultId: triviaResultId ?? this.triviaResultId,
+    pokemonId: pokemonId ?? this.pokemonId,
+    correct: correct ?? this.correct,
+  );
+  TriviaAnswerRow copyWithCompanion(TriviaAnswerTableCompanion data) {
+    return TriviaAnswerRow(
+      id: data.id.present ? data.id.value : this.id,
+      triviaResultId: data.triviaResultId.present
+          ? data.triviaResultId.value
+          : this.triviaResultId,
+      pokemonId: data.pokemonId.present ? data.pokemonId.value : this.pokemonId,
+      correct: data.correct.present ? data.correct.value : this.correct,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TriviaAnswerRow(')
+          ..write('id: $id, ')
+          ..write('triviaResultId: $triviaResultId, ')
+          ..write('pokemonId: $pokemonId, ')
+          ..write('correct: $correct')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, triviaResultId, pokemonId, correct);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TriviaAnswerRow &&
+          other.id == this.id &&
+          other.triviaResultId == this.triviaResultId &&
+          other.pokemonId == this.pokemonId &&
+          other.correct == this.correct);
+}
+
+class TriviaAnswerTableCompanion extends UpdateCompanion<TriviaAnswerRow> {
+  final Value<int> id;
+  final Value<int> triviaResultId;
+  final Value<int> pokemonId;
+  final Value<bool> correct;
+  const TriviaAnswerTableCompanion({
+    this.id = const Value.absent(),
+    this.triviaResultId = const Value.absent(),
+    this.pokemonId = const Value.absent(),
+    this.correct = const Value.absent(),
+  });
+  TriviaAnswerTableCompanion.insert({
+    this.id = const Value.absent(),
+    required int triviaResultId,
+    required int pokemonId,
+    required bool correct,
+  }) : triviaResultId = Value(triviaResultId),
+       pokemonId = Value(pokemonId),
+       correct = Value(correct);
+  static Insertable<TriviaAnswerRow> custom({
+    Expression<int>? id,
+    Expression<int>? triviaResultId,
+    Expression<int>? pokemonId,
+    Expression<bool>? correct,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (triviaResultId != null) 'trivia_result_id': triviaResultId,
+      if (pokemonId != null) 'pokemon_id': pokemonId,
+      if (correct != null) 'correct': correct,
+    });
+  }
+
+  TriviaAnswerTableCompanion copyWith({
+    Value<int>? id,
+    Value<int>? triviaResultId,
+    Value<int>? pokemonId,
+    Value<bool>? correct,
+  }) {
+    return TriviaAnswerTableCompanion(
+      id: id ?? this.id,
+      triviaResultId: triviaResultId ?? this.triviaResultId,
+      pokemonId: pokemonId ?? this.pokemonId,
+      correct: correct ?? this.correct,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (triviaResultId.present) {
+      map['trivia_result_id'] = Variable<int>(triviaResultId.value);
+    }
+    if (pokemonId.present) {
+      map['pokemon_id'] = Variable<int>(pokemonId.value);
+    }
+    if (correct.present) {
+      map['correct'] = Variable<bool>(correct.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TriviaAnswerTableCompanion(')
+          ..write('id: $id, ')
+          ..write('triviaResultId: $triviaResultId, ')
+          ..write('pokemonId: $pokemonId, ')
+          ..write('correct: $correct')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $AchievementTableTable extends AchievementTable
+    with TableInfo<$AchievementTableTable, AchievementRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AchievementTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unlockedAtMeta = const VerificationMeta(
+    'unlockedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> unlockedAt = GeneratedColumn<DateTime>(
+    'unlocked_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [kind, unlockedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'achievement_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AchievementRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('unlocked_at')) {
+      context.handle(
+        _unlockedAtMeta,
+        unlockedAt.isAcceptableOrUnknown(data['unlocked_at']!, _unlockedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_unlockedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {kind};
+  @override
+  AchievementRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AchievementRow(
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      unlockedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}unlocked_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AchievementTableTable createAlias(String alias) {
+    return $AchievementTableTable(attachedDatabase, alias);
+  }
+}
+
+class AchievementRow extends DataClass implements Insertable<AchievementRow> {
+  final String kind;
+  final DateTime unlockedAt;
+  const AchievementRow({required this.kind, required this.unlockedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['kind'] = Variable<String>(kind);
+    map['unlocked_at'] = Variable<DateTime>(unlockedAt);
+    return map;
+  }
+
+  AchievementTableCompanion toCompanion(bool nullToAbsent) {
+    return AchievementTableCompanion(
+      kind: Value(kind),
+      unlockedAt: Value(unlockedAt),
+    );
+  }
+
+  factory AchievementRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AchievementRow(
+      kind: serializer.fromJson<String>(json['kind']),
+      unlockedAt: serializer.fromJson<DateTime>(json['unlockedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'kind': serializer.toJson<String>(kind),
+      'unlockedAt': serializer.toJson<DateTime>(unlockedAt),
+    };
+  }
+
+  AchievementRow copyWith({String? kind, DateTime? unlockedAt}) =>
+      AchievementRow(
+        kind: kind ?? this.kind,
+        unlockedAt: unlockedAt ?? this.unlockedAt,
+      );
+  AchievementRow copyWithCompanion(AchievementTableCompanion data) {
+    return AchievementRow(
+      kind: data.kind.present ? data.kind.value : this.kind,
+      unlockedAt: data.unlockedAt.present
+          ? data.unlockedAt.value
+          : this.unlockedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AchievementRow(')
+          ..write('kind: $kind, ')
+          ..write('unlockedAt: $unlockedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(kind, unlockedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AchievementRow &&
+          other.kind == this.kind &&
+          other.unlockedAt == this.unlockedAt);
+}
+
+class AchievementTableCompanion extends UpdateCompanion<AchievementRow> {
+  final Value<String> kind;
+  final Value<DateTime> unlockedAt;
+  final Value<int> rowid;
+  const AchievementTableCompanion({
+    this.kind = const Value.absent(),
+    this.unlockedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AchievementTableCompanion.insert({
+    required String kind,
+    required DateTime unlockedAt,
+    this.rowid = const Value.absent(),
+  }) : kind = Value(kind),
+       unlockedAt = Value(unlockedAt);
+  static Insertable<AchievementRow> custom({
+    Expression<String>? kind,
+    Expression<DateTime>? unlockedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (kind != null) 'kind': kind,
+      if (unlockedAt != null) 'unlocked_at': unlockedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AchievementTableCompanion copyWith({
+    Value<String>? kind,
+    Value<DateTime>? unlockedAt,
+    Value<int>? rowid,
+  }) {
+    return AchievementTableCompanion(
+      kind: kind ?? this.kind,
+      unlockedAt: unlockedAt ?? this.unlockedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (unlockedAt.present) {
+      map['unlocked_at'] = Variable<DateTime>(unlockedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AchievementTableCompanion(')
+          ..write('kind: $kind, ')
+          ..write('unlockedAt: $unlockedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FavoriteTableTable extends FavoriteTable
+    with TableInfo<$FavoriteTableTable, FavoriteRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FavoriteTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _pokemonIdMeta = const VerificationMeta(
+    'pokemonId',
+  );
+  @override
+  late final GeneratedColumn<int> pokemonId = GeneratedColumn<int>(
+    'pokemon_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [pokemonId, createdAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'favorite_table';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FavoriteRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('pokemon_id')) {
+      context.handle(
+        _pokemonIdMeta,
+        pokemonId.isAcceptableOrUnknown(data['pokemon_id']!, _pokemonIdMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {pokemonId};
+  @override
+  FavoriteRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FavoriteRow(
+      pokemonId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pokemon_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $FavoriteTableTable createAlias(String alias) {
+    return $FavoriteTableTable(attachedDatabase, alias);
+  }
+}
+
+class FavoriteRow extends DataClass implements Insertable<FavoriteRow> {
+  /// Id del Pokémon favorito. Es la llave primaria: un Pokémon solo puede
+  /// estar una vez en favoritos.
+  final int pokemonId;
+
+  /// Momento en que se marcó como favorito.
+  final DateTime createdAt;
+  const FavoriteRow({required this.pokemonId, required this.createdAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['pokemon_id'] = Variable<int>(pokemonId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  FavoriteTableCompanion toCompanion(bool nullToAbsent) {
+    return FavoriteTableCompanion(
+      pokemonId: Value(pokemonId),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory FavoriteRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FavoriteRow(
+      pokemonId: serializer.fromJson<int>(json['pokemonId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'pokemonId': serializer.toJson<int>(pokemonId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  FavoriteRow copyWith({int? pokemonId, DateTime? createdAt}) => FavoriteRow(
+    pokemonId: pokemonId ?? this.pokemonId,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  FavoriteRow copyWithCompanion(FavoriteTableCompanion data) {
+    return FavoriteRow(
+      pokemonId: data.pokemonId.present ? data.pokemonId.value : this.pokemonId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FavoriteRow(')
+          ..write('pokemonId: $pokemonId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(pokemonId, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FavoriteRow &&
+          other.pokemonId == this.pokemonId &&
+          other.createdAt == this.createdAt);
+}
+
+class FavoriteTableCompanion extends UpdateCompanion<FavoriteRow> {
+  final Value<int> pokemonId;
+  final Value<DateTime> createdAt;
+  const FavoriteTableCompanion({
+    this.pokemonId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  FavoriteTableCompanion.insert({
+    this.pokemonId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  static Insertable<FavoriteRow> custom({
+    Expression<int>? pokemonId,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (pokemonId != null) 'pokemon_id': pokemonId,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  FavoriteTableCompanion copyWith({
+    Value<int>? pokemonId,
+    Value<DateTime>? createdAt,
+  }) {
+    return FavoriteTableCompanion(
+      pokemonId: pokemonId ?? this.pokemonId,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (pokemonId.present) {
+      map['pokemon_id'] = Variable<int>(pokemonId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FavoriteTableCompanion(')
+          ..write('pokemonId: $pokemonId, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $SyncMetadataTableTable extends SyncMetadataTable
     with TableInfo<$SyncMetadataTableTable, SyncMetadataRow> {
   @override
@@ -4675,7 +5571,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $PokemonTableTable pokemonTable = $PokemonTableTable(this);
-  late final $FavoriteTableTable favoriteTable = $FavoriteTableTable(this);
   late final $TypeTableTable typeTable = $TypeTableTable(this);
   late final $PokemonTypeTableTable pokemonTypeTable = $PokemonTypeTableTable(
     this,
@@ -4697,6 +5592,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TypeMatchupTableTable typeMatchupTable = $TypeMatchupTableTable(
     this,
   );
+  late final $TriviaResultTableTable triviaResultTable =
+      $TriviaResultTableTable(this);
+  late final $TriviaAnswerTableTable triviaAnswerTable =
+      $TriviaAnswerTableTable(this);
+  late final $AchievementTableTable achievementTable = $AchievementTableTable(
+    this,
+  );
+  late final $FavoriteTableTable favoriteTable = $FavoriteTableTable(this);
   late final $SyncMetadataTableTable syncMetadataTable =
       $SyncMetadataTableTable(this);
   late final Index idxPokemonGeneration = Index(
@@ -4729,7 +5632,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     pokemonTable,
-    favoriteTable,
     typeTable,
     pokemonTypeTable,
     statTable,
@@ -4743,6 +5645,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     eggGroupTable,
     pokemonEggGroupTable,
     typeMatchupTable,
+    triviaResultTable,
+    triviaAnswerTable,
+    achievementTable,
+    favoriteTable,
     syncMetadataTable,
     idxPokemonGeneration,
     idxPokemonName,
@@ -4815,6 +5721,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('pokemon_egg_group_table', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'trivia_result_table',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('trivia_answer_table', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -5002,6 +5915,27 @@ final class $$PokemonTableTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _pokemonEggGroupTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$TriviaAnswerTableTable, List<TriviaAnswerRow>>
+  _triviaAnswerTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.triviaAnswerTable,
+        aliasName: 'pokemon_table__id__trivia_answer_table__pokemon_id',
+      );
+
+  $$TriviaAnswerTableTableProcessedTableManager get triviaAnswerTableRefs {
+    final manager = $$TriviaAnswerTableTableTableManager(
+      $_db,
+      $_db.triviaAnswerTable,
+    ).filter((f) => f.pokemonId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _triviaAnswerTableRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -5259,6 +6193,31 @@ class $$PokemonTableTableFilterComposer
           }) => $$PokemonEggGroupTableTableFilterComposer(
             $db: $db,
             $table: $db.pokemonEggGroupTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> triviaAnswerTableRefs(
+    Expression<bool> Function($$TriviaAnswerTableTableFilterComposer f) f,
+  ) {
+    final $$TriviaAnswerTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.triviaAnswerTable,
+      getReferencedColumn: (t) => t.pokemonId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TriviaAnswerTableTableFilterComposer(
+            $db: $db,
+            $table: $db.triviaAnswerTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -5571,6 +6530,32 @@ class $$PokemonTableTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> triviaAnswerTableRefs<T extends Object>(
+    Expression<T> Function($$TriviaAnswerTableTableAnnotationComposer a) f,
+  ) {
+    final $$TriviaAnswerTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.triviaAnswerTable,
+          getReferencedColumn: (t) => t.pokemonId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$TriviaAnswerTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.triviaAnswerTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$PokemonTableTableTableManager
@@ -5595,6 +6580,7 @@ class $$PokemonTableTableTableManager
             bool toEvolutions,
             bool formTableRefs,
             bool pokemonEggGroupTableRefs,
+            bool triviaAnswerTableRefs,
           })
         > {
   $$PokemonTableTableTableManager(_$AppDatabase db, $PokemonTableTable table)
@@ -5674,6 +6660,7 @@ class $$PokemonTableTableTableManager
                 toEvolutions = false,
                 formTableRefs = false,
                 pokemonEggGroupTableRefs = false,
+                triviaAnswerTableRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -5686,6 +6673,7 @@ class $$PokemonTableTableTableManager
                     if (toEvolutions) db.evolutionTable,
                     if (formTableRefs) db.formTable,
                     if (pokemonEggGroupTableRefs) db.pokemonEggGroupTable,
+                    if (triviaAnswerTableRefs) db.triviaAnswerTable,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -5850,6 +6838,26 @@ class $$PokemonTableTableTableManager
                           referencedColumn: 'pokemon_id',
                           typedResults: items,
                         ),
+                      if (triviaAnswerTableRefs)
+                        await $_getPrefetchedDataByColumns<
+                          PokemonRow,
+                          $PokemonTableTable,
+                          TriviaAnswerRow,
+                          $TriviaAnswerTableTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PokemonTableTableReferences
+                              ._triviaAnswerTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PokemonTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).triviaAnswerTableRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'pokemon_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -5879,153 +6887,8 @@ typedef $$PokemonTableTableProcessedTableManager =
         bool toEvolutions,
         bool formTableRefs,
         bool pokemonEggGroupTableRefs,
+        bool triviaAnswerTableRefs,
       })
-    >;
-typedef $$FavoriteTableTableCreateCompanionBuilder =
-    FavoriteTableCompanion Function({
-      Value<int> pokemonId,
-      Value<DateTime> createdAt,
-    });
-typedef $$FavoriteTableTableUpdateCompanionBuilder =
-    FavoriteTableCompanion Function({
-      Value<int> pokemonId,
-      Value<DateTime> createdAt,
-    });
-
-class $$FavoriteTableTableFilterComposer
-    extends Composer<_$AppDatabase, $FavoriteTableTable> {
-  $$FavoriteTableTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get pokemonId => $composableBuilder(
-    column: $table.pokemonId,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$FavoriteTableTableOrderingComposer
-    extends Composer<_$AppDatabase, $FavoriteTableTable> {
-  $$FavoriteTableTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get pokemonId => $composableBuilder(
-    column: $table.pokemonId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$FavoriteTableTableAnnotationComposer
-    extends Composer<_$AppDatabase, $FavoriteTableTable> {
-  $$FavoriteTableTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get pokemonId =>
-      $composableBuilder(column: $table.pokemonId, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-}
-
-class $$FavoriteTableTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $FavoriteTableTable,
-          FavoriteRow,
-          $$FavoriteTableTableFilterComposer,
-          $$FavoriteTableTableOrderingComposer,
-          $$FavoriteTableTableAnnotationComposer,
-          $$FavoriteTableTableCreateCompanionBuilder,
-          $$FavoriteTableTableUpdateCompanionBuilder,
-          (
-            FavoriteRow,
-            BaseReferences<_$AppDatabase, $FavoriteTableTable, FavoriteRow>,
-          ),
-          FavoriteRow,
-          PrefetchHooks Function()
-        > {
-  $$FavoriteTableTableTableManager(_$AppDatabase db, $FavoriteTableTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$FavoriteTableTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$FavoriteTableTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$FavoriteTableTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> pokemonId = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-              }) => FavoriteTableCompanion(
-                pokemonId: pokemonId,
-                createdAt: createdAt,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> pokemonId = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-              }) => FavoriteTableCompanion.insert(
-                pokemonId: pokemonId,
-                createdAt: createdAt,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable<$FavoriteTableTable, FavoriteRow>(table),
-                  BaseReferences<
-                    _$AppDatabase,
-                    $FavoriteTableTable,
-                    FavoriteRow
-                  >(db, table, e),
-                ),
-              )
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$FavoriteTableTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $FavoriteTableTable,
-      FavoriteRow,
-      $$FavoriteTableTableFilterComposer,
-      $$FavoriteTableTableOrderingComposer,
-      $$FavoriteTableTableAnnotationComposer,
-      $$FavoriteTableTableCreateCompanionBuilder,
-      $$FavoriteTableTableUpdateCompanionBuilder,
-      (
-        FavoriteRow,
-        BaseReferences<_$AppDatabase, $FavoriteTableTable, FavoriteRow>,
-      ),
-      FavoriteRow,
-      PrefetchHooks Function()
     >;
 typedef $$TypeTableTableCreateCompanionBuilder =
     TypeTableCompanion Function({Value<int> id, required String name});
@@ -10674,6 +11537,1032 @@ typedef $$TypeMatchupTableTableProcessedTableManager =
       TypeMatchupRow,
       PrefetchHooks Function({bool attackingTypeId, bool defendingTypeId})
     >;
+typedef $$TriviaResultTableTableCreateCompanionBuilder =
+    TriviaResultTableCompanion Function({
+      Value<int> id,
+      required int score,
+      required int correctAnswers,
+      required int totalQuestions,
+      Value<DateTime> playedAt,
+    });
+typedef $$TriviaResultTableTableUpdateCompanionBuilder =
+    TriviaResultTableCompanion Function({
+      Value<int> id,
+      Value<int> score,
+      Value<int> correctAnswers,
+      Value<int> totalQuestions,
+      Value<DateTime> playedAt,
+    });
+
+final class $$TriviaResultTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $TriviaResultTableTable,
+          TriviaResultRow
+        > {
+  $$TriviaResultTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<$TriviaAnswerTableTable, List<TriviaAnswerRow>>
+  _triviaAnswerTableRefsTable(_$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.triviaAnswerTable,
+        aliasName:
+            'trivia_result_table__id__trivia_answer_table__trivia_result_id',
+      );
+
+  $$TriviaAnswerTableTableProcessedTableManager get triviaAnswerTableRefs {
+    final manager = $$TriviaAnswerTableTableTableManager(
+      $_db,
+      $_db.triviaAnswerTable,
+    ).filter((f) => f.triviaResultId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _triviaAnswerTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$TriviaResultTableTableFilterComposer
+    extends Composer<_$AppDatabase, $TriviaResultTableTable> {
+  $$TriviaResultTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get score => $composableBuilder(
+    column: $table.score,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get correctAnswers => $composableBuilder(
+    column: $table.correctAnswers,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalQuestions => $composableBuilder(
+    column: $table.totalQuestions,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get playedAt => $composableBuilder(
+    column: $table.playedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> triviaAnswerTableRefs(
+    Expression<bool> Function($$TriviaAnswerTableTableFilterComposer f) f,
+  ) {
+    final $$TriviaAnswerTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.triviaAnswerTable,
+      getReferencedColumn: (t) => t.triviaResultId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TriviaAnswerTableTableFilterComposer(
+            $db: $db,
+            $table: $db.triviaAnswerTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$TriviaResultTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $TriviaResultTableTable> {
+  $$TriviaResultTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get score => $composableBuilder(
+    column: $table.score,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get correctAnswers => $composableBuilder(
+    column: $table.correctAnswers,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalQuestions => $composableBuilder(
+    column: $table.totalQuestions,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get playedAt => $composableBuilder(
+    column: $table.playedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TriviaResultTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TriviaResultTableTable> {
+  $$TriviaResultTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get score =>
+      $composableBuilder(column: $table.score, builder: (column) => column);
+
+  GeneratedColumn<int> get correctAnswers => $composableBuilder(
+    column: $table.correctAnswers,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalQuestions => $composableBuilder(
+    column: $table.totalQuestions,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get playedAt =>
+      $composableBuilder(column: $table.playedAt, builder: (column) => column);
+
+  Expression<T> triviaAnswerTableRefs<T extends Object>(
+    Expression<T> Function($$TriviaAnswerTableTableAnnotationComposer a) f,
+  ) {
+    final $$TriviaAnswerTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.triviaAnswerTable,
+          getReferencedColumn: (t) => t.triviaResultId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$TriviaAnswerTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.triviaAnswerTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$TriviaResultTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TriviaResultTableTable,
+          TriviaResultRow,
+          $$TriviaResultTableTableFilterComposer,
+          $$TriviaResultTableTableOrderingComposer,
+          $$TriviaResultTableTableAnnotationComposer,
+          $$TriviaResultTableTableCreateCompanionBuilder,
+          $$TriviaResultTableTableUpdateCompanionBuilder,
+          (TriviaResultRow, $$TriviaResultTableTableReferences),
+          TriviaResultRow,
+          PrefetchHooks Function({bool triviaAnswerTableRefs})
+        > {
+  $$TriviaResultTableTableTableManager(
+    _$AppDatabase db,
+    $TriviaResultTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TriviaResultTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TriviaResultTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TriviaResultTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> score = const Value.absent(),
+                Value<int> correctAnswers = const Value.absent(),
+                Value<int> totalQuestions = const Value.absent(),
+                Value<DateTime> playedAt = const Value.absent(),
+              }) => TriviaResultTableCompanion(
+                id: id,
+                score: score,
+                correctAnswers: correctAnswers,
+                totalQuestions: totalQuestions,
+                playedAt: playedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int score,
+                required int correctAnswers,
+                required int totalQuestions,
+                Value<DateTime> playedAt = const Value.absent(),
+              }) => TriviaResultTableCompanion.insert(
+                id: id,
+                score: score,
+                correctAnswers: correctAnswers,
+                totalQuestions: totalQuestions,
+                playedAt: playedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TriviaResultTableTable, TriviaResultRow>(table),
+                  $$TriviaResultTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({triviaAnswerTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (triviaAnswerTableRefs) db.triviaAnswerTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (triviaAnswerTableRefs)
+                    await $_getPrefetchedDataByColumns<
+                      TriviaResultRow,
+                      $TriviaResultTableTable,
+                      TriviaAnswerRow,
+                      $TriviaAnswerTableTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$TriviaResultTableTableReferences
+                          ._triviaAnswerTableRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$TriviaResultTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).triviaAnswerTableRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'trivia_result_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TriviaResultTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TriviaResultTableTable,
+      TriviaResultRow,
+      $$TriviaResultTableTableFilterComposer,
+      $$TriviaResultTableTableOrderingComposer,
+      $$TriviaResultTableTableAnnotationComposer,
+      $$TriviaResultTableTableCreateCompanionBuilder,
+      $$TriviaResultTableTableUpdateCompanionBuilder,
+      (TriviaResultRow, $$TriviaResultTableTableReferences),
+      TriviaResultRow,
+      PrefetchHooks Function({bool triviaAnswerTableRefs})
+    >;
+typedef $$TriviaAnswerTableTableCreateCompanionBuilder =
+    TriviaAnswerTableCompanion Function({
+      Value<int> id,
+      required int triviaResultId,
+      required int pokemonId,
+      required bool correct,
+    });
+typedef $$TriviaAnswerTableTableUpdateCompanionBuilder =
+    TriviaAnswerTableCompanion Function({
+      Value<int> id,
+      Value<int> triviaResultId,
+      Value<int> pokemonId,
+      Value<bool> correct,
+    });
+
+final class $$TriviaAnswerTableTableReferences
+    extends
+        BaseReferences<
+          _$AppDatabase,
+          $TriviaAnswerTableTable,
+          TriviaAnswerRow
+        > {
+  $$TriviaAnswerTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $TriviaResultTableTable _triviaResultIdTable(_$AppDatabase db) =>
+      db.triviaResultTable.createAlias(
+        'trivia_answer_table__trivia_result_id__trivia_result_table__id',
+      );
+
+  $$TriviaResultTableTableProcessedTableManager get triviaResultId {
+    final $_column = $_itemColumn<int>('trivia_result_id')!;
+
+    final manager = $$TriviaResultTableTableTableManager(
+      $_db,
+      $_db.triviaResultTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_triviaResultIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $PokemonTableTable _pokemonIdTable(_$AppDatabase db) => db.pokemonTable
+      .createAlias('trivia_answer_table__pokemon_id__pokemon_table__id');
+
+  $$PokemonTableTableProcessedTableManager get pokemonId {
+    final $_column = $_itemColumn<int>('pokemon_id')!;
+
+    final manager = $$PokemonTableTableTableManager(
+      $_db,
+      $_db.pokemonTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_pokemonIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$TriviaAnswerTableTableFilterComposer
+    extends Composer<_$AppDatabase, $TriviaAnswerTableTable> {
+  $$TriviaAnswerTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get correct => $composableBuilder(
+    column: $table.correct,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$TriviaResultTableTableFilterComposer get triviaResultId {
+    final $$TriviaResultTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.triviaResultId,
+      referencedTable: $db.triviaResultTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TriviaResultTableTableFilterComposer(
+            $db: $db,
+            $table: $db.triviaResultTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PokemonTableTableFilterComposer get pokemonId {
+    final $$PokemonTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pokemonId,
+      referencedTable: $db.pokemonTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PokemonTableTableFilterComposer(
+            $db: $db,
+            $table: $db.pokemonTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TriviaAnswerTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $TriviaAnswerTableTable> {
+  $$TriviaAnswerTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get correct => $composableBuilder(
+    column: $table.correct,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$TriviaResultTableTableOrderingComposer get triviaResultId {
+    final $$TriviaResultTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.triviaResultId,
+      referencedTable: $db.triviaResultTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TriviaResultTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.triviaResultTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$PokemonTableTableOrderingComposer get pokemonId {
+    final $$PokemonTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pokemonId,
+      referencedTable: $db.pokemonTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PokemonTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.pokemonTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TriviaAnswerTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TriviaAnswerTableTable> {
+  $$TriviaAnswerTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get correct =>
+      $composableBuilder(column: $table.correct, builder: (column) => column);
+
+  $$TriviaResultTableTableAnnotationComposer get triviaResultId {
+    final $$TriviaResultTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.triviaResultId,
+          referencedTable: $db.triviaResultTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$TriviaResultTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.triviaResultTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+
+  $$PokemonTableTableAnnotationComposer get pokemonId {
+    final $$PokemonTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.pokemonId,
+      referencedTable: $db.pokemonTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PokemonTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.pokemonTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$TriviaAnswerTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TriviaAnswerTableTable,
+          TriviaAnswerRow,
+          $$TriviaAnswerTableTableFilterComposer,
+          $$TriviaAnswerTableTableOrderingComposer,
+          $$TriviaAnswerTableTableAnnotationComposer,
+          $$TriviaAnswerTableTableCreateCompanionBuilder,
+          $$TriviaAnswerTableTableUpdateCompanionBuilder,
+          (TriviaAnswerRow, $$TriviaAnswerTableTableReferences),
+          TriviaAnswerRow,
+          PrefetchHooks Function({bool triviaResultId, bool pokemonId})
+        > {
+  $$TriviaAnswerTableTableTableManager(
+    _$AppDatabase db,
+    $TriviaAnswerTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TriviaAnswerTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TriviaAnswerTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TriviaAnswerTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> triviaResultId = const Value.absent(),
+                Value<int> pokemonId = const Value.absent(),
+                Value<bool> correct = const Value.absent(),
+              }) => TriviaAnswerTableCompanion(
+                id: id,
+                triviaResultId: triviaResultId,
+                pokemonId: pokemonId,
+                correct: correct,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int triviaResultId,
+                required int pokemonId,
+                required bool correct,
+              }) => TriviaAnswerTableCompanion.insert(
+                id: id,
+                triviaResultId: triviaResultId,
+                pokemonId: pokemonId,
+                correct: correct,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$TriviaAnswerTableTable, TriviaAnswerRow>(table),
+                  $$TriviaAnswerTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({triviaResultId = false, pokemonId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (triviaResultId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.triviaResultId,
+                                referencedTable:
+                                    $$TriviaAnswerTableTableReferences
+                                        ._triviaResultIdTable(db),
+                                referencedColumn:
+                                    $$TriviaAnswerTableTableReferences
+                                        ._triviaResultIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+                    if (pokemonId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.pokemonId,
+                                referencedTable:
+                                    $$TriviaAnswerTableTableReferences
+                                        ._pokemonIdTable(db),
+                                referencedColumn:
+                                    $$TriviaAnswerTableTableReferences
+                                        ._pokemonIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$TriviaAnswerTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TriviaAnswerTableTable,
+      TriviaAnswerRow,
+      $$TriviaAnswerTableTableFilterComposer,
+      $$TriviaAnswerTableTableOrderingComposer,
+      $$TriviaAnswerTableTableAnnotationComposer,
+      $$TriviaAnswerTableTableCreateCompanionBuilder,
+      $$TriviaAnswerTableTableUpdateCompanionBuilder,
+      (TriviaAnswerRow, $$TriviaAnswerTableTableReferences),
+      TriviaAnswerRow,
+      PrefetchHooks Function({bool triviaResultId, bool pokemonId})
+    >;
+typedef $$AchievementTableTableCreateCompanionBuilder =
+    AchievementTableCompanion Function({
+      required String kind,
+      required DateTime unlockedAt,
+      Value<int> rowid,
+    });
+typedef $$AchievementTableTableUpdateCompanionBuilder =
+    AchievementTableCompanion Function({
+      Value<String> kind,
+      Value<DateTime> unlockedAt,
+      Value<int> rowid,
+    });
+
+class $$AchievementTableTableFilterComposer
+    extends Composer<_$AppDatabase, $AchievementTableTable> {
+  $$AchievementTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get unlockedAt => $composableBuilder(
+    column: $table.unlockedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AchievementTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $AchievementTableTable> {
+  $$AchievementTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get unlockedAt => $composableBuilder(
+    column: $table.unlockedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AchievementTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AchievementTableTable> {
+  $$AchievementTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get unlockedAt => $composableBuilder(
+    column: $table.unlockedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$AchievementTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AchievementTableTable,
+          AchievementRow,
+          $$AchievementTableTableFilterComposer,
+          $$AchievementTableTableOrderingComposer,
+          $$AchievementTableTableAnnotationComposer,
+          $$AchievementTableTableCreateCompanionBuilder,
+          $$AchievementTableTableUpdateCompanionBuilder,
+          (
+            AchievementRow,
+            BaseReferences<
+              _$AppDatabase,
+              $AchievementTableTable,
+              AchievementRow
+            >,
+          ),
+          AchievementRow,
+          PrefetchHooks Function()
+        > {
+  $$AchievementTableTableTableManager(
+    _$AppDatabase db,
+    $AchievementTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AchievementTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AchievementTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AchievementTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> kind = const Value.absent(),
+                Value<DateTime> unlockedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => AchievementTableCompanion(
+                kind: kind,
+                unlockedAt: unlockedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String kind,
+                required DateTime unlockedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => AchievementTableCompanion.insert(
+                kind: kind,
+                unlockedAt: unlockedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$AchievementTableTable, AchievementRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $AchievementTableTable,
+                    AchievementRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AchievementTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AchievementTableTable,
+      AchievementRow,
+      $$AchievementTableTableFilterComposer,
+      $$AchievementTableTableOrderingComposer,
+      $$AchievementTableTableAnnotationComposer,
+      $$AchievementTableTableCreateCompanionBuilder,
+      $$AchievementTableTableUpdateCompanionBuilder,
+      (
+        AchievementRow,
+        BaseReferences<_$AppDatabase, $AchievementTableTable, AchievementRow>,
+      ),
+      AchievementRow,
+      PrefetchHooks Function()
+    >;
+typedef $$FavoriteTableTableCreateCompanionBuilder =
+    FavoriteTableCompanion Function({
+      Value<int> pokemonId,
+      Value<DateTime> createdAt,
+    });
+typedef $$FavoriteTableTableUpdateCompanionBuilder =
+    FavoriteTableCompanion Function({
+      Value<int> pokemonId,
+      Value<DateTime> createdAt,
+    });
+
+class $$FavoriteTableTableFilterComposer
+    extends Composer<_$AppDatabase, $FavoriteTableTable> {
+  $$FavoriteTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get pokemonId => $composableBuilder(
+    column: $table.pokemonId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FavoriteTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $FavoriteTableTable> {
+  $$FavoriteTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get pokemonId => $composableBuilder(
+    column: $table.pokemonId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FavoriteTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FavoriteTableTable> {
+  $$FavoriteTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get pokemonId =>
+      $composableBuilder(column: $table.pokemonId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$FavoriteTableTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FavoriteTableTable,
+          FavoriteRow,
+          $$FavoriteTableTableFilterComposer,
+          $$FavoriteTableTableOrderingComposer,
+          $$FavoriteTableTableAnnotationComposer,
+          $$FavoriteTableTableCreateCompanionBuilder,
+          $$FavoriteTableTableUpdateCompanionBuilder,
+          (
+            FavoriteRow,
+            BaseReferences<_$AppDatabase, $FavoriteTableTable, FavoriteRow>,
+          ),
+          FavoriteRow,
+          PrefetchHooks Function()
+        > {
+  $$FavoriteTableTableTableManager(_$AppDatabase db, $FavoriteTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FavoriteTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FavoriteTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FavoriteTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> pokemonId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => FavoriteTableCompanion(
+                pokemonId: pokemonId,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> pokemonId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => FavoriteTableCompanion.insert(
+                pokemonId: pokemonId,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$FavoriteTableTable, FavoriteRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $FavoriteTableTable,
+                    FavoriteRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FavoriteTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FavoriteTableTable,
+      FavoriteRow,
+      $$FavoriteTableTableFilterComposer,
+      $$FavoriteTableTableOrderingComposer,
+      $$FavoriteTableTableAnnotationComposer,
+      $$FavoriteTableTableCreateCompanionBuilder,
+      $$FavoriteTableTableUpdateCompanionBuilder,
+      (
+        FavoriteRow,
+        BaseReferences<_$AppDatabase, $FavoriteTableTable, FavoriteRow>,
+      ),
+      FavoriteRow,
+      PrefetchHooks Function()
+    >;
 typedef $$SyncMetadataTableTableCreateCompanionBuilder =
     SyncMetadataTableCompanion Function({
       required String resourceKey,
@@ -10886,8 +12775,6 @@ class $AppDatabaseManager {
   $AppDatabaseManager(this._db);
   $$PokemonTableTableTableManager get pokemonTable =>
       $$PokemonTableTableTableManager(_db, _db.pokemonTable);
-  $$FavoriteTableTableTableManager get favoriteTable =>
-      $$FavoriteTableTableTableManager(_db, _db.favoriteTable);
   $$TypeTableTableTableManager get typeTable =>
       $$TypeTableTableTableManager(_db, _db.typeTable);
   $$PokemonTypeTableTableTableManager get pokemonTypeTable =>
@@ -10914,6 +12801,14 @@ class $AppDatabaseManager {
       $$PokemonEggGroupTableTableTableManager(_db, _db.pokemonEggGroupTable);
   $$TypeMatchupTableTableTableManager get typeMatchupTable =>
       $$TypeMatchupTableTableTableManager(_db, _db.typeMatchupTable);
+  $$TriviaResultTableTableTableManager get triviaResultTable =>
+      $$TriviaResultTableTableTableManager(_db, _db.triviaResultTable);
+  $$TriviaAnswerTableTableTableManager get triviaAnswerTable =>
+      $$TriviaAnswerTableTableTableManager(_db, _db.triviaAnswerTable);
+  $$AchievementTableTableTableManager get achievementTable =>
+      $$AchievementTableTableTableManager(_db, _db.achievementTable);
+  $$FavoriteTableTableTableManager get favoriteTable =>
+      $$FavoriteTableTableTableManager(_db, _db.favoriteTable);
   $$SyncMetadataTableTableTableManager get syncMetadataTable =>
       $$SyncMetadataTableTableTableManager(_db, _db.syncMetadataTable);
 }

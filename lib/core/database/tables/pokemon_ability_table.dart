@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
-import 'pokemon_table.dart';
+
 import 'ability_table.dart';
+import 'pokemon_table.dart';
 
 @DataClassName('PokemonAbilityRow')
 class PokemonAbilityTable extends Table {

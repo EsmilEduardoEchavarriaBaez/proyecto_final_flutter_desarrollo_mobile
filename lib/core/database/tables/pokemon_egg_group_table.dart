@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
-import 'pokemon_table.dart';
+
 import 'egg_group_table.dart';
+import 'pokemon_table.dart';
 
 @DataClassName('PokemonEggGroupRow')
 class PokemonEggGroupTable extends Table {

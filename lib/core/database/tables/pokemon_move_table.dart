@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
-import 'pokemon_table.dart';
+
 import 'move_table.dart';
+import 'pokemon_table.dart';
 
 @DataClassName('PokemonMoveRow')
 @TableIndex(name: 'idx_pokemon_move_version', columns: {#pokemonId, #versionGroup})
